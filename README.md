@@ -23,23 +23,23 @@ And then run:
 
 ### Usage
 
-You can use the ranker stand-alone via the `LexoRanker` class.
+You can use the ranker stand-alone via the `LexoRanker::Ranker` class.
 
 ```ruby
 # Use `.only` to get the first ranking of a set.
-LexoRanker.only # => "M"
+LexoRanker::Ranker.only # => "M"
 
 # Use `.between` to get the ranking of an element between two other rankings
-LexoRanker.between("M", "T") # => "R"
+LexoRanker::Ranker.between("M", "T") # => "R"
 
 # Use `.first` to get the ranking that comes before the first element
-LexoRanker.first("M") # => "H"
+LexoRanker::Ranker.first("M") # => "H"
 
 # Use `.init_from_enumerable(enum_list)` to generate a rank for each element
 # in an already sorted list of elements, returns a hash with the elements as
 # the keys and the rank as values.
 list = %w[my sorted list]
-LexoRanker.init_from_enumerable(list) # { "my" => "M", "sorted" => "R", "list" => "t"}
+LexoRanker::Ranker.init_from_enumerable(list) # { "my" => "M", "sorted" => "R", "list" => "t"}
 ```
 
 ## Ruby on Rails
@@ -50,18 +50,14 @@ You can also use LexoRanker combined with ActiveRecord to add ranking
 support to any model.
 
 Each model that uses LexoRanker will need to have a column used to hold the
-rankings. You can generate a migration to add the column using:
-
-` rails generate lexoranker MODEL [field_name] [options]`
-
-to generate an ActiveRecord migration to add the column to the specified
-MODEL. Then include the LexoRanker module in the model, and call the
+rankings. Then include the `LexoRanker::Rankable.new` module in the model, and 
+call the
 `.rankable` method.
 
 ```ruby
 
 class Page < ApplicationRecord
-  include LexoRanker
+  include LexoRanker::Rankable.new
 
   rankable
 end
@@ -73,7 +69,7 @@ other options can be customized.
 ```ruby
 
 class Page < ApplicationRecord
-  include LexoRanker
+  include LexoRanker::Rankable.new
 
   rankable field: "priority", # Set the name of the column used to hold ranking information
     scope_by: "department_id", # Set the name of the column used to scope the uniqueness validation to
@@ -88,7 +84,7 @@ Given the setup:
 ```ruby
 
 class Page < ApplicationRecord
-  include LexoRanker
+  include LexoRanker::Rankable.new
 
   rankable
 end
