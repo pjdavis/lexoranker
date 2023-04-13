@@ -12,3 +12,5 @@ gem "simplecov"
 gem "sqlite3"
 # for ActiveRecord based specs
 gem "activerecord"
+# for Sequel based specs
+gem "sequel"

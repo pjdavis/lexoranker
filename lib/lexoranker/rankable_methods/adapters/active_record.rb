@@ -35,6 +35,23 @@ module LexoRanker
             instance.save
             instance
           end
+
+          def ranks_around_position(id, position)
+            ranked.where.not(id: id).offset(position - 1).limit(2).pluck(:"#{rankable_column}")
+          end
+        end
+
+        def ranked_collection
+          @ranked_collection ||= begin
+            scope = self.class.ranked
+            scope = scope.where("#{self.class.rankable_scope}": send(self.class.rankable_scope)) if rankable_scoped?
+            scope.pluck(:"#{self.class.rankable_column}")
+          end
+        end
+
+        def move_to!(position)
+          move_to(position)
+          save!
         end
       end
     end
