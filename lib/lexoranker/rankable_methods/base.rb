@@ -54,7 +54,7 @@ module LexoRanker
         previous, following = if position.zero?
           [nil, ranked_collection.first]
         else
-          self.class.ranked.where.not(id: id).offset(position - 1).limit(2).pluck(:"#{self.class.rankable_column}")
+          self.class.ranks_around_position(id, position)
         end
 
         rank = self.class.rankable_ranker.between(previous, following)
@@ -62,23 +62,10 @@ module LexoRanker
         send("#{self.class.rankable_column}=", rank)
       end
 
-      def move_to!(position)
-        move_to(position)
-        save!
-      end
-
       private
 
       def rankable_scoped?
-        self.class.rankable_scope.present?
-      end
-
-      def ranked_collection
-        @ranked_collection ||= begin
-          scope = self.class.ranked
-          scope = scope.where("#{self.class.rankable_scope}": send(self.class.rankable_scope)) if rankable_scoped?
-          scope.pluck(:"#{self.class.rankable_column}")
-        end
+        !self.class.rankable_scope.nil?
       end
     end
   end
