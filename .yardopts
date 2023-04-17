@@ -1,0 +1,7 @@
+--title "LexoRanker - Lexicographic Ranking for Ruby"
+--main "README.md"
+--fail-on-warning
+-
+CHANGELOG.md
+LICENSE.txt
+lib/**/*.rb

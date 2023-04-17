@@ -1,5 +1,13 @@
 # frozen_string_literal: true
 
+# Library for sorting a set of elements based on their lexicographic order and the average distance between them.
+#
+# {LexoRanker::Ranker} Library for generating lexicographic rankings based on the elements that come before and after
+# the element that needs to be ranked.
+#
+# {LexoRanker::Rankable} Module that can be included into either ActiveRecord or Sequel database adapters for adding
+# convenience methods for ranking instances.
+#
 # MIT License
 #
 # Parts of this code Copyright (c) 2019 SeokJoon.Yun
@@ -22,10 +30,10 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-# LexoRanker is a lexicographic ranking system
-# that uses lexicographic ordering to sort items in a list, rather than
-# numbers.
 module LexoRanker
+  # LexoRanker is a lexicographic ranking system
+  # that uses lexicographic ordering to sort items in a list, rather than
+  # numbers.
   class Ranker
     class << self
       ##

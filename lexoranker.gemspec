@@ -10,7 +10,7 @@ Gem::Specification.new do |spec|
 
   spec.summary = "Lexicographic ranker for Ruby"
   spec.description = <<~DESC
-    Library for sorting a set of elements based on their lexicographic order and the average distance between them"
+    Library for sorting a set of elements based on their lexicographic order and the average distance between them
   DESC
   spec.homepage = "https://github.com/pjdavis/lexoranker"
   spec.license = "MIT"
