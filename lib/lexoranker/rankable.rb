@@ -25,7 +25,19 @@
 require_relative "rankable_methods/base"
 
 module LexoRanker
+  # Module for adding convenience methods to ActiveRecord or Sequel database adapters to support ranking items. See
+  # {RankableMethods::Base} for class and instance methods added from this module.
+  #
   class Rankable < Module
+    # Instance the module to be included in the class for the database adapter.
+    #
+    # @param adapter [Symbol] the adapter to use
+    # @return Rankable the module that can be included
+    #
+    # @example Include {Rankable} in an ActiveRecord model
+    #   class MyList < ActiveRecord::Base
+    #     include LexoRanker::Rankable.new(:active_record)
+    #   end
     def initialize(adapter = :active_record)
       @adapter_setting = adapter
       @adapter = select_adapter

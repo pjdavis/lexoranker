@@ -85,6 +85,7 @@ GEM
     tzinfo (2.0.6)
       concurrent-ruby (~> 1.0)
     unicode-display_width (2.4.2)
+    yard (0.9.34)
 
 PLATFORMS
   ruby
@@ -100,6 +101,7 @@ DEPENDENCIES
   simplecov
   sqlite3
   standard
+  yard
 
 BUNDLED WITH
    2.4.7

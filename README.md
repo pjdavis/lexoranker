@@ -137,11 +137,9 @@ in will need to respond to:
 In order to use LexoRank, the database system you use must know how to
 lexicographically order the same way Ruby does. For MySQL that is generally
 the `ascii_bin` collation for the ranking column. For PostgreSQL, it's the
-`C` collation. The included generator will not choose one of these for you
-(but can be passed in as an option). The character space that is used by
-default includes [A-Z, a-z, 0-9] and should be ordered correctly without the
-collations, however if you wish to provide your own, you need to adjust your
-database accordingly.
+`C` collation. The character space that is used by default includes 
+[A-Z, a-z, 0-9] and should be ordered correctly without the collations, however
+if you wish to provide your own, you need to adjust your database accordingly.
 
 ## Contributing
 
@@ -161,7 +159,7 @@ some steps to help you get started.
 2. Fork the repository
 3. Create a branch off of `main` for your changes (name it something reasonable)
 4. Make your changes (be sure you have tests!)
-5. Make sure all specs and the linter run successfully (`rake qa`)
+5. Make sure all specs and the linter run successfully (`rake`)
 6. Commit your changes with a reference to your issue number in the commit
    message
 7. Push your changes to your fork.
@@ -174,4 +172,4 @@ See CHANGELOG.md
 
 Copyright (c) 2023 PJ Davis (pj.davis@gmail.com)
 
-LexoRanker is released under the [MIT License](MIT License).
+LexoRanker is released under the [MIT License](https://mit-license.org/).

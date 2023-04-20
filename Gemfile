@@ -9,6 +9,7 @@ gem "standard"
 gem "rubocop-md"
 gem "rubocop-rspec"
 gem "simplecov"
+gem "yard"
 gem "sqlite3"
 # for ActiveRecord based specs
 gem "activerecord"
