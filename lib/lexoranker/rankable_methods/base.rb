@@ -32,7 +32,7 @@ module LexoRanker
         # @param ranker [Class] The class used to determine rankings
         # @param default_insert_pos [Symbol] the default position for newly created rankable elements to be placed.
         # @return [void]
-        def rankable_by(field: :rank, scope_by: nil, ranker: LexoRanker::Ranker, default_insert_pos: :bottom)
+        def rankable_by(field: :rank, scope_by: nil, ranker: LexoRanker::Ranker.new, default_insert_pos: :bottom)
           unless %i[top bottom].include?(default_insert_pos)
             raise ArgumentError,
               "#{default_insert_pos} is not a valid default_insert_position. Must be one of [:top, :bottom]"
