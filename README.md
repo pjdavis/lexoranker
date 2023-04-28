@@ -27,19 +27,19 @@ You can use the ranker stand-alone via the `LexoRanker::Ranker` class.
 
 ```ruby
 # Use `.only` to get the first ranking of a set.
-LexoRanker::Ranker.only # => "M"
+LexoRanker::Ranker.new.only # => "M"
 
 # Use `.between` to get the ranking of an element between two other rankings
-LexoRanker::Ranker.between("M", "T") # => "R"
+LexoRanker::Ranker.new.between("M", "T") # => "R"
 
 # Use `.first` to get the ranking that comes before the first element
-LexoRanker::Ranker.first("M") # => "H"
+LexoRanker::Ranker.new.first("M") # => "H"
 
 # Use `.init_from_enumerable(enum_list)` to generate a rank for each element
 # in an already sorted list of elements, returns a hash with the elements as
 # the keys and the rank as values.
 list = %w[my sorted list]
-LexoRanker::Ranker.init_from_enumerable(list) # { "my" => "M", "sorted" => "R", "list" => "t"}
+LexoRanker::Ranker.new.init_from_enumerable(list) # { "my" => "M", "sorted" => "R", "list" => "t"}
 ```
 
 ## Ruby on Rails
@@ -121,18 +121,18 @@ used instead of the ranker that is shipped with LexoRanker.
 ### Character Spaces
 
 The default ranker for LexoRanker can also be customized with a different
-character space. Please note that if you do decide to customize it, you'll
-need to make sure your database and Ruby agree on the ranking of characters.
-This can be passed to LexoRanker with
-`LexoRanker.with_character_space(characterspace)`. The character space you pass
-in will need to respond to:
+character space. This can be passed to LexoRanker with:
+
+`LexoRanker::Ranker.new(characterspace: MyCustomCharacterSpace)` 
+
+The character space you pass in will need to respond to:
 
 - `ord(char) # convert a character to an ordinal value`
 - `char(ord) # convert an ordinal value to a character`
 - `min # the topmost ranking character in your character space`
 - `max # the bottommost ranking character in your character space`
 
-## Notes
+#### Notes about Character Spaces
 
 In order to use LexoRank, the database system you use must know how to
 lexicographically order the same way Ruby does. For MySQL that is generally
