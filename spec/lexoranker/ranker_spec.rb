@@ -116,6 +116,21 @@ RSpec.describe LexoRanker::Ranker do
     end
   end
 
+  describe "#balanced_ranks" do
+    context "with a positive integer" do
+      it "returns an array of sorted ranks" do
+        ranks = described_class.new.balanced_ranks(3)
+        expect(ranks.sort).to eq ranks
+      end
+    end
+
+    context "with a 0 or negative integer" do
+      it "raises an argument error" do
+        expect { described_class.new.balanced_ranks(0) }.to raise_error(ArgumentError)
+      end
+    end
+  end
+
   describe "#character_space" do
     context "with the default character space" do
       it "returns LexoRanker::Ranker::CharacterSpace" do

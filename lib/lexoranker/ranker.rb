@@ -67,6 +67,7 @@ module LexoRanker
     #   custom_ranker = LexoRanker::Ranker.new(CustomCharacterSpace)
     def initialize(character_space = CharacterSpace)
       @character_space = character_space
+      @encoder = CharacterSpaceEncoder.new(character_space)
     end
 
     ##
@@ -76,7 +77,7 @@ module LexoRanker
     # @return [String] the new LexoRank
     #
     # @example Return a LexoRank with no previous or following items.
-    #   LexoRanker.only # => 'M'
+    #   LexoRanker::Ranker.new.only # => 'M'
     def only
       value_between(before: character_space.min, after: character_space.max)
     end
@@ -89,10 +90,10 @@ module LexoRanker
     # @return [String] a LexoRank before first_value
     #
     # @example Return a LexoRank before `first_value`
-    #   LexoRanker.first('M') # => 'H'
+    #   LexoRanker::Ranker.new.first('M') # => 'H'
     #
     # @example Return a LexoRank with a nil `first_value`
-    #   LexoRanker.first(nil) # => 'M'
+    #   LexoRanker::Ranker.new.first(nil) # => 'M'
     def first(first_value)
       value_between(before: character_space.min, after: first_value)
     end
@@ -105,10 +106,10 @@ module LexoRanker
     # @return [String] a LexoRank after last_value
     #
     # @example Return a LexoRank after `last_value`
-    #   LexoRanker.last('M') # => 'T'
+    #   LexoRanker::Ranker.new.last('M') # => 'T'
     #
     # @example Return a Lexorank with a nil `last_value`
-    #   LexoRanker.last(nil) # => 'M'
+    #   LexoRanker::Ranker.new.last(nil) # => 'M'
     def last(last_value)
       value_between(before: last_value, after: character_space.max)
     end
@@ -126,10 +127,10 @@ module LexoRanker
     # @return [String] a LexoRank between `previous` and `following`
     #
     # @example Return a LexoRank between `previous` and `following`
-    #   LexoRanker.between('M', 'T') # => 'R'
+    #   LexoRanker::Ranker.new.between('M', 'T') # => 'R'
     #
     # @example Return a LexoRank anywhere before `following`
-    #   LexoRanker.between(nil, 'M') # => 'H'
+    #   LexoRanker::Ranker.new.between(nil, 'M') # => 'H'
     def between(previous, following)
       value_between(before: previous, after: following)
     end
@@ -137,21 +138,42 @@ module LexoRanker
     ##
     # Init a new LexoRanking for an already sorted list of elements
     # @todo: Will cause issues with lists that have duplicate elements, either warn or fix.
-    # @todo: Balance List when generating list
     #
     # @param list [Array] the existing list to be assigned LexoRanks
     # @return [Hash] a hash with key being the element of the list, and value being the assigned LexoRank
     #
-    # @example Return a has with element => LexoRank hash
+    # @example Return a hash with element => LexoRank hash
     #   list = [1,2,3]
-    #   LexoRanker.init_from_array(list) # { 1 => 'M', 2 => 'T', 3 => 'W' }
+    #   LexoRanker::Ranker.new.init_from_array(list) # { 1 => 'M', 2 => 'T', 3 => 'W' }
     def init_from_array(list)
       raise ArgumentError, "`list` can not be nil" if list.nil?
 
-      list.inject({}) { |memo, element| memo.merge({element => last(memo.values.last)}) }
+      list.zip(balanced_ranks(list.size)).to_h
+    end
+
+    ##
+    # Return an array of rankings in order that cover `element_count` number of elements.
+    #
+    # @param element_count [Integer] number of ranking elements
+    # @return [Array] an array of ranks in order.
+    #
+    # @example Return an array with 5 elements
+    #   list = LexoRanker::Ranker.new.balanced_ranks(5) # ["2", "E", "Q", "c", "o"]
+    def balanced_ranks(element_count)
+      raise ArgumentError, "`element_count` must be greater than zero" if element_count.nil? || element_count <= 0
+
+      start = 2
+      places = (Math.log(element_count) / Math.log(character_space.size)).ceil
+      ending = (character_space.size**places) - 2
+
+      Array.new(element_count).map.with_index do |_, i|
+        encoder.encode(start + (i.to_f / element_count.to_f * ending).round).rjust(places, character_space.min)
+      end
     end
 
     private
+
+    attr_reader :encoder
 
     # rubocop:disable Metrics/MethodLength
     def value_between(before:, after:)
@@ -194,6 +216,23 @@ module LexoRanker
       (index >= string.length) ? default : string[index]
     end
 
+    class CharacterSpaceEncoder
+      attr_reader :character_space
+
+      def initialize(character_space)
+        @character_space = character_space
+      end
+
+      def encode(num)
+        str = ""
+        while num > 0
+          str = character_space.chr(num % character_space.size) + str
+          num /= character_space.size
+        end
+        str
+      end
+    end
+
     class CharacterSpace
       CHARACTERS = [*"0".."9", *"A".."Z", *"a".."z"].sort.freeze
 
@@ -227,6 +266,10 @@ module LexoRanker
         # @return [String]
         def max
           CHARACTERS.last || (raise EmptyCharacterSpaceError, "Character Space is empty")
+        end
+
+        def size
+          CHARACTERS.size
         end
       end
     end
