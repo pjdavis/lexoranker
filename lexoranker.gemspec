@@ -3,7 +3,7 @@
 require_relative "lib/lexoranker/version"
 
 Gem::Specification.new do |spec|
-  spec.name = "LexoRanker"
+  spec.name = "lexoranker"
   spec.version = LexoRanker::VERSION
   spec.authors = ["PJ Davis"]
   spec.email = ["pj.davis@gmail.com"]

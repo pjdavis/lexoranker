@@ -1,7 +1,7 @@
 PATH
   remote: .
   specs:
-    LexoRanker (0.1.0)
+    lexoranker (0.1.0)
 
 GEM
   remote: https://rubygems.org/
@@ -102,8 +102,8 @@ PLATFORMS
   ruby
 
 DEPENDENCIES
-  LexoRanker!
   activerecord
+  lexoranker!
   rake
   rspec
   rubocop-md
