@@ -137,6 +137,31 @@ RSpec.describe "LexoRanker::RankableMethods::Adapters::ActiveRecord" do
     end
   end
 
+  describe ".ranks_around_position" do
+    context "with only one element" do
+      let(:post) { post_class.create(title: "Post 1") }
+
+      it "is empty" do
+        expect(post_class.ranks_around_position(post.id, 1)).to be_empty
+      end
+    end
+
+    context "with a scope_by column" do
+      let(:rankable_opts) { {scope_by: :scope} }
+
+      before do
+        other_scope_posts = (0..2).map { |i| post_class.create(title: "Other Post #{i}", scope: "other") }
+        ranks = post_class.rankable_ranker.init_from_array(other_scope_posts)
+        other_scope_posts.each { |post| post.update!(rank: ranks[post]) }
+      end
+
+      it "does not take into account other scope_by columns" do
+        post = post_class.create(title: "Post 1", scope: "scope")
+        expect(post_class.ranks_around_position(post.id, 1, scope_value: "scope")).to be_empty
+      end
+    end
+  end
+
   describe "#move_to_top" do
     let(:posts) do
       (0..2).map { |i| post_class.create(title: "Post #{i}") }
@@ -214,7 +239,16 @@ RSpec.describe "LexoRanker::RankableMethods::Adapters::ActiveRecord" do
     end
 
     let(:posts) do
-      (0..2).map { |i| post_class.create(title: "Post #{i}") }
+      (0..2).map { |i| post_class.create(title: "Post #{i}", scope: "first") }
+    end
+
+    context "when moving the top element to the second element" do
+      it "moves the element" do
+        top_post = posts[0]
+        top_post.move_to(1)
+        top_post.save
+        expect(post_class.ranked.second).to eq(top_post)
+      end
     end
 
     context "when a position is in bounds" do
@@ -242,6 +276,26 @@ RSpec.describe "LexoRanker::RankableMethods::Adapters::ActiveRecord" do
         new_post = post_class.new(title: "New Post")
 
         expect { new_post.move_to(-1) }.to raise_error LexoRanker::OutOfBoundsError
+      end
+    end
+
+    context "when scope_by is set" do
+      let(:rankable_opts) { {scope_by: :scope} }
+
+      let(:other_scope_posts) do
+        (0..2).map { |i| post_class.create(title: "Post #{i}", scope: "other") }
+      end
+
+      before do
+        ranks = post_class.rankable_ranker.init_from_array(other_scope_posts)
+        other_scope_posts.each { |post| post.update!(rank: ranks[post]) }
+      end
+
+      it "does not use ranks from other scoped_by columns" do
+        top_post = other_scope_posts[0]
+        top_post.move_to(1)
+        top_post.save
+        expect(post_class.where(scope: "other").ranked.second).to eq(top_post)
       end
     end
   end

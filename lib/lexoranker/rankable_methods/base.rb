@@ -143,7 +143,8 @@ module LexoRanker
         previous, following = if position.zero?
           [nil, ranked_collection.first]
         else
-          self.class.ranks_around_position(id, position)
+          scope_value = send(self.class.rankable_scope) if rankable_scoped?
+          self.class.ranks_around_position(id, position, scope_value: scope_value)
         end
 
         rank = self.class.rankable_ranker.between(previous, following)

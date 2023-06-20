@@ -1,7 +1,7 @@
 PATH
   remote: .
   specs:
-    lexoranker (0.1.0)
+    lexoranker (0.2.0)
 
 GEM
   remote: https://rubygems.org/
