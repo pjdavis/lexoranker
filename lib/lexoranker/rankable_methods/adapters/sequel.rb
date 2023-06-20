@@ -41,8 +41,10 @@ module LexoRanker
             instance
           end
 
-          def ranks_around_position(id, position)
-            ranked.exclude(id: id).offset(position - 1).limit(2).select(rankable_column).map(&:"#{rankable_column}")
+          def ranks_around_position(id, position, scope_value: nil)
+            scope = ranked.exclude(id: id)
+            scope = scope.where("#{rankable_scope}": scope_value) unless scope_value.nil?
+            scope.offset(position - 1).limit(2).select(rankable_column).map(&:"#{rankable_column}")
           end
         end
 
