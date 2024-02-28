@@ -149,7 +149,7 @@ module LexoRanker
 
         rank = self.class.rankable_ranker.between(previous, following)
 
-        send("#{self.class.rankable_column}=", rank)
+        send(:"#{self.class.rankable_column}=", rank)
       end
 
       private
