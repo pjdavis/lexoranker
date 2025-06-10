@@ -1,4 +1,7 @@
 ## 2025-06-10
+* Release 0.3.0
+* Create initial RubyGems Release
+## 2025-06-09
 * Bump Gems to current versions
 * Replace StandardRB with Rubocop for running linter (still uses the
   StandardRB rules under the hood, but lets me configure the RSpec linter)
