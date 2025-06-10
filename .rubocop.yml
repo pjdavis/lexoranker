@@ -1,0 +1,30 @@
+inherit_mode:
+  merge:
+    - Exclude
+
+require:
+  - standard
+
+plugins:
+  - rubocop-rspec
+  - rubocop-md
+
+inherit_gem:
+  standard: config/base.yml
+
+AllCops:
+  SuggestExtensions: false
+  TargetRubyVersion: 3.2
+  NewCops: enable
+
+Lint/Debugger: # don't leave binding.pry or debugger
+  Enabled: true
+  Exclude: [ ]
+
+RSpec/SpecFilePathFormat:
+  CustomTransform:
+    LexoRanker: lexoranker
+
+RSpec/Focus: # run ALL tests on CI
+  Enabled: true
+  Exclude: []

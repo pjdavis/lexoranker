@@ -1,4 +1,0 @@
-ruby_version: 2.7
-extend_config:
-  - .rubocop/rspec.yml
-  - .rubocop/strict.yml

@@ -78,7 +78,7 @@ RSpec.describe "LexoRanker::RankableMethods::Adapters::Sequel" do
     end
 
     context "with default direction" do
-      it "orders based on rank " do
+      it "orders based on rank" do
         expect(post_class.ranked.map(&:id)).to eq posts.reverse.map(&:id)
       end
     end

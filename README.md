@@ -50,7 +50,7 @@ You can also use LexoRanker combined with ActiveRecord to add ranking
 support to any model.
 
 Each model that uses LexoRanker will need to have a column used to hold the
-rankings. Then include the `LexoRanker::Rankable.new` module in the model, and 
+rankings. Then include the `LexoRanker::Rankable.new` module in the model, and
 call the
 `.rankable` method.
 
@@ -123,7 +123,7 @@ used instead of the ranker that is shipped with LexoRanker.
 The default ranker for LexoRanker can also be customized with a different
 character space. This can be passed to LexoRanker with:
 
-`LexoRanker::Ranker.new(characterspace: MyCustomCharacterSpace)` 
+`LexoRanker::Ranker.new(characterspace: MyCustomCharacterSpace)`
 
 The character space you pass in will need to respond to:
 
@@ -137,7 +137,7 @@ The character space you pass in will need to respond to:
 In order to use LexoRank, the database system you use must know how to
 lexicographically order the same way Ruby does. For MySQL that is generally
 the `ascii_bin` collation for the ranking column. For PostgreSQL, it's the
-`C` collation. The character space that is used by default includes 
+`C` collation. The character space that is used by default includes
 [A-Z, a-z, 0-9] and should be ordered correctly without the collations, however
 if you wish to provide your own, you need to adjust your database accordingly.
 

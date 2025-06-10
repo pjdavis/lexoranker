@@ -1,9 +1,0 @@
-require:
-  - rubocop-rspec
-
-RSpec/FilePath:
-  Enabled: false
-
-RSpec/Focus: # run ALL tests on CI
-  Enabled: true
-  Exclude: []
