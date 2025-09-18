@@ -18,10 +18,13 @@ RSpec.describe "LexoRanker::RankableMethods::Adapters::ActiveRecord" do
 
   let(:rankable_opts) { {} }
   let(:post_class) do
-    klass = Class.new(ActiveRecord::Base)
+    klass = Class.new(ActiveRecord::Base) do
+      def self.model_name = ActiveModel::Name.new(self, nil, "post_class")
+    end
     klass.table_name = "posts"
     klass.include(LexoRanker::Rankable.new)
     klass.rankable(**rankable_opts)
+    klass.validates_presence_of(:title)
     klass
   end
 
@@ -97,6 +100,13 @@ RSpec.describe "LexoRanker::RankableMethods::Adapters::ActiveRecord" do
         expect(post_class.ranked).not_to include(unranked)
       end
     end
+
+    context "with invalid instance" do
+      it "returns an error on the instance" do
+        new_post = post_class.create_ranked({title: nil})
+        expect(new_post.errors[:title]).to include("can't be blank")
+      end
+    end
   end
 
   describe ".create" do
@@ -133,6 +143,44 @@ RSpec.describe "LexoRanker::RankableMethods::Adapters::ActiveRecord" do
       it "positions at number" do
         new_post = post_class.create_ranked({title: "New Post"}, position: 1)
         expect(post_class.ranked.second).to eq new_post
+      end
+    end
+  end
+
+  describe ".create_ranked!" do
+    let(:posts) do
+      (0..2).map { |i| post_class.create(title: "Post #{i}") }
+    end
+
+    before do
+      ranks = post_class.rankable_ranker.init_from_array(posts.reverse)
+      posts.each { |post| post.update!(rank: ranks[post]) }
+    end
+
+    context "with no position" do
+      it "positions at the bottom" do
+        new_post = post_class.create_ranked!({title: "New Post"})
+        expect(post_class.ranked.last).to eq new_post
+      end
+    end
+
+    context "with :top position" do
+      it "positions at the top" do
+        new_post = post_class.create_ranked!({title: "New Post"}, position: :top)
+        expect(post_class.ranked.first).to eq new_post
+      end
+    end
+
+    context "with numbered position" do
+      it "positions at number" do
+        new_post = post_class.create_ranked!({title: "New Post"}, position: 1)
+        expect(post_class.ranked.second).to eq new_post
+      end
+    end
+
+    context "with invalid instance" do
+      it "returns an error on the instance" do
+        expect { post_class.create_ranked!({title: nil}) }.to raise_error(ActiveRecord::RecordInvalid)
       end
     end
   end
