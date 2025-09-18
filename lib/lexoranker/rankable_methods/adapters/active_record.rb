@@ -22,6 +22,26 @@ module LexoRanker
           end
 
           def create_ranked(attributes, position: nil, &block)
+            instance = instance_ranked(attributes, position:, &block)
+            instance.save
+            instance
+          end
+
+          def create_ranked!(attributes, position: nil, &block)
+            instance = instance_ranked(attributes, position:, &block)
+            instance.save!
+            instance
+          end
+
+          def ranks_around_position(id, position, scope_value: nil)
+            scope = ranked.where.not(id: id)
+            scope = scope.where("#{rankable_scope}": scope_value) unless scope_value.nil?
+            scope.offset(position - 1).limit(2).pluck(:"#{rankable_column}")
+          end
+
+          private
+
+          def instance_ranked(attributes, position: nil, &block)
             position = case position
             when :top, :bottom
               [:"move_to_#{position}"]
@@ -32,14 +52,7 @@ module LexoRanker
             end
             instance = new(attributes, &block)
             instance.send(*position)
-            instance.save
             instance
-          end
-
-          def ranks_around_position(id, position, scope_value: nil)
-            scope = ranked.where.not(id: id)
-            scope = scope.where("#{rankable_scope}": scope_value) unless scope_value.nil?
-            scope.offset(position - 1).limit(2).pluck(:"#{rankable_column}")
           end
         end
 
