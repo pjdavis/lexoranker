@@ -1,3 +1,7 @@
+## 2025-09-22
+* Release 0.4.0
+* Bump Gems to current versions
+* Add .create_ranked! to ActiveRecord adapter
 ## 2025-06-10
 * Release 0.3.0
 * Create initial RubyGems Release
